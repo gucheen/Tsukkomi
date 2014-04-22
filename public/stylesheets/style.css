@@ -1,0 +1,21 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.api-icon{
+    font-size: 24px;
+    cursor: pointer;
+    -webkit-transition: all 0.5s ease 0;
+    -moz-transition: all 0.5s ease 0;
+    -ms-transition: all 0.5s ease 0;
+    -o-transition: all 0.5s ease 0;
+    transition: all 0.5s ease 0;
+}
+.api-icon:hover{
+    color: red;
+}

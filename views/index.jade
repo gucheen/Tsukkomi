@@ -1,0 +1,47 @@
+extends layout
+
+block content
+  h1= title
+  p #{title} everyday.
+  ol#weibo-list
+  #auth
+    p Authorize: 
+      i.icon-weibo.api-icon
+  - var time = new Date();
+  p= time
+  
+  script(src='/javascripts/jquery.min.js')
+  script(src='/javascripts/common.js')
+  script.
+    $(function(){
+      $('.icon-weibo').click(function(e){
+        e.preventDefault();
+        window.location.assign('https://api.weibo.com/oauth2/authorize?client_id=###&redirect_uri=###'); // Change Your client_id and redirect_uri here
+      }); 
+      var _code = getQueryStringRegExp('code');
+      var weiboAccessToken = docCookies.getItem('weiboAccessToken');
+      if(_code){
+        $.post('/getAccessToken',{code: _code}).done(function(data){
+          var weibos = data.weibos;
+          docCookies.setItem('weiboAccessToken', data.access_token);
+          for(weibo in weibos){
+            var weibo_text = '<li>'+ weibos[weibo]['text'] +'</li>';
+            $('#weibo-list').append(weibo_text);
+          }
+        });
+      }else if(weiboAccessToken){
+        $.post('/getWeibo',{access_token: weiboAccessToken}).done(function(data){
+          var weibos = data.weibos;
+          for(weibo in weibos){
+            if(weibos[weibo]['retweeted_status']){
+              var weibo_text = '<li>'+ weibos[weibo]['text'] +' Orginal: '+ weibos[weibo]['retweeted_status']['text'] +'</li>'
+            }else{
+              var weibo_text = '<li>'+ weibos[weibo]['text'] +'</li>';
+            }
+            $('#weibo-list').append(weibo_text);
+          }
+        })
+      }else{
+        return false;
+      }
+    })
